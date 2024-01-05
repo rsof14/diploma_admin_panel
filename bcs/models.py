@@ -112,8 +112,11 @@ class ObjectsPermissions(models.Model):
         verbose_name = 'Право роли над объектом'
         verbose_name_plural = 'Права роли над объектом'
 
-    # def __str__(self):
-    #     return self.object
+    def clean(self):
+        if self.object.object_name == "Strategy" and self.strategy_type.type == 'NULL':
+            raise ValidationError("For object Strategy choose type")
+        if self.object.object_name != "Strategy" and self.strategy_type.type != 'NULL':
+            raise ValidationError("For this object choose 'NULL' in field strategy type")
 
 
 class RiskProfile(models.Model):
@@ -127,14 +130,6 @@ class RiskProfile(models.Model):
 
     def __str__(self):
         return self.name
-
-
-# class StrategyStructure(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     strategy = models.ForeignKey('Strategy', on_delete=models.DO_NOTHING)
-#     asset = models.ForeignKey('Asset', on_delete=models.DO_NOTHING)
-#     weight = models.FloatField()
-#
 
 
 class Strategy(models.Model):
@@ -159,12 +154,6 @@ class Strategy(models.Model):
 
     def __str__(self):
         return self.name
-
-    # def save(self, *args, **kwargs):
-    #     print(self.structure)
-    #     self.structure = json.loads(self.structure)
-    #     print(self.structure)
-    #     super().save(*args, **kwargs)
 
 
 def validate_login(value):

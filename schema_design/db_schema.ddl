@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS public.objects_permissions
     role_id uuid NOT NULL,
     permission text COLLATE pg_catalog."default" NOT NULL,
     strategy_type text COLLATE pg_catalog."default",
+    id uuid,
     CONSTRAINT objects_permissions_pkey PRIMARY KEY (object, role_id)
 );
 

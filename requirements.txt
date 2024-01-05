@@ -10,3 +10,5 @@ django-split-settings==1.2.0
 psycopg2-binary==2.9.5
 uwsgi==2.0.20
 django-cors-headers==3.14.0
+mimesis==11.1.0
+yfinance==0.2.33
