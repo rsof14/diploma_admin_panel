@@ -20,7 +20,7 @@ class Asset(models.Model):
 
 
 class Currency(models.Model):
-    currency = models.CharField(primary_key=True, max_length=3)
+    currency = models.CharField(primary_key=True, max_length=3, verbose_name='Валюта')
     description = models.TextField(verbose_name='Описание', blank=True)
 
     class Meta:
@@ -145,7 +145,7 @@ class Strategy(models.Model):
     valid = models.BooleanField(verbose_name='Действующая', default=True)
     management_fee = models.FloatField(verbose_name='Комиссия за управление', blank=True)
     success_fee = models.FloatField(verbose_name='Комиссия за успех', blank=True)
-    benchmark = models.JSONField(verbose_name='Бенчмарк', blank=True)
+    benchmark = models.TextField(verbose_name='Бенчмарк', blank=True)
 
     class Meta:
         db_table = "public\".\"strategy"
@@ -187,7 +187,7 @@ class Portfolio(models.Model):
                                     verbose_name='Клиент')
     strategy_id = models.ForeignKey('Strategy', db_column='strategy_id', on_delete=models.DO_NOTHING,
                                     verbose_name='Стратегия', blank=True)
-    structure = models.JSONField(verbose_name='Состав', blank=True)
+    structure = models.TextField(verbose_name='Состав', blank=True)
     asset_manager = models.ForeignKey('User', db_column='asset_manager', on_delete=models.DO_NOTHING,
                                       verbose_name='Управляющий', blank=True)
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')

@@ -22,17 +22,22 @@ from .models import (
 
 @admin.register(Asset)
 class AssetAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['ISIN', 'ticker', 'name']
+    list_filter = ['sector']
+    list_display = ['ticker', 'name']
 
 
 @admin.register(Currency)
 class CurrencyAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['currency', 'description']
 
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['name']
+    list_filter = ['branch']
+    ordering = ['name']
+    list_display = ['name', 'branch']
 
 
 @admin.register(Permissions)
@@ -61,23 +66,26 @@ class ObjectsPermissionsInline(admin.TabularInline):
 
 @admin.register(SystemObjects)
 class SystemObjectsAdmin(admin.ModelAdmin):
-    # pass
     inlines = (ObjectsPermissionsInline,)
 
 
 @admin.register(RiskProfile)
 class RiskProfileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'max_var']
 
 
 @admin.register(Strategy)
 class StrategyAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'currency', 'type', 'risk_profile', 'valid']
+    search_fields = ['name', 'description']
+    list_filter = ['currency', 'type', 'risk_profile', 'valid']
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'login', 'role_id']
+    search_fields = ['name', 'login']
+    list_filter = ['role_id', 'is_superuser']
 
 
 @admin.register(RiskMetrics)
@@ -87,7 +95,10 @@ class RiskMetricsAdmin(admin.ModelAdmin):
 
 @admin.register(SupportMessages)
 class SupportMessagesAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['message', 'answer']
+    list_filter = ['done', 'msg_date']
+    sortable_by = ['msg_date']
+    list_display = ['msg_date', 'done', 'user_id']
 
 
 class PortfolioValuesInline(admin.TabularInline):
@@ -105,3 +116,6 @@ class PortfolioStrategyHistoryInline(admin.TabularInline):
 @admin.register(Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
     inlines = (PortfolioValuesInline, PortfolioRisksInline, PortfolioStrategyHistoryInline,)
+    list_display = ['account', 'customer_id', 'asset_manager', 'strategy_id', 'updated']
+    search_fields = ['account']
+    list_filter = ['creation_date', 'updated', 'asset_manager', 'strategy_id']
