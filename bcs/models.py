@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 import uuid
-import json
 
 
 class Asset(models.Model):
@@ -187,7 +186,7 @@ class Portfolio(models.Model):
                                     verbose_name='Клиент')
     strategy_id = models.ForeignKey('Strategy', db_column='strategy_id', on_delete=models.DO_NOTHING,
                                     verbose_name='Стратегия', blank=True)
-    structure = models.TextField(verbose_name='Состав', blank=True)
+    structure = models.TextField(verbose_name='Состав', blank=True, default='{}')
     asset_manager = models.ForeignKey('User', db_column='asset_manager', on_delete=models.DO_NOTHING,
                                       verbose_name='Управляющий', blank=True)
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
@@ -200,6 +199,10 @@ class Portfolio(models.Model):
 
     def __str__(self):
         return self.account
+
+    def clean(self):
+        if self.asset_manager.role_id.name != "Управляющий":
+            raise ValidationError("Choose user with correct role as asset manager")
 
 
 class PortfolioValues(models.Model):

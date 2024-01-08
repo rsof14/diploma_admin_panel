@@ -175,8 +175,13 @@ def generate_account_numb():
     return f"{int(random.uniform(100000, 999999))}{random.choice(string.ascii_uppercase)}{random.choice(string.ascii_uppercase)}"
 
 
+def get_portfolio_structure():
+    return '{}'
+
+
 def generate_portfolio():
-    result = ("INSERT INTO public.portfolio (account, customer_id, strategy_id, asset_manager, creation_date, "
+    result = ("INSERT INTO public.portfolio (account, customer_id, strategy_id, structure, asset_manager, "
+              "creation_date,"
               "updated) VALUES \n")
     cur.execute("SELECT id from public.customer;")
     customers = cur.fetchall()
@@ -191,7 +196,7 @@ def generate_portfolio():
         customer_id = str(random.choice(customers)[0])
         strategy_id = str(random.choice(strategies)[0])
         manager_id = str(random.choice(users)[0])
-        result += f"('{account}', '{customer_id}', '{strategy_id}', '{manager_id}', '2024-01-05', {False}), \n"
+        result += f"('{account}', '{customer_id}', '{strategy_id}', '{get_portfolio_structure()}', '{manager_id}', '2024-01-05', {False}), \n"
     result = result[:len(result) - 3]
     result += " ON CONFLICT DO NOTHING;"
     return result

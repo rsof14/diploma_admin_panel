@@ -59,11 +59,6 @@ class ObjectsPermissionsInline(admin.TabularInline):
     model = ObjectsPermissions
 
 
-# @admin.register(ObjectsPermissions)
-# class ObjectsPermissionsAdmin(admin.ModelAdmin):
-#     pass
-
-
 @admin.register(SystemObjects)
 class SystemObjectsAdmin(admin.ModelAdmin):
     inlines = (ObjectsPermissionsInline,)
