@@ -8,6 +8,7 @@ import string
 import uuid
 import os
 from dotenv import load_dotenv
+from passlib.hash import pbkdf2_sha256
 from static_data import CITIES, CURRENCY, TICKERS, STRATEGY_NAMES, STRATEGY_TYPES, WEIGHTS, RISK_PROFILES, \
     SYSTEM_OBJECTS, PERMISSIONS, ROLES, RISK_METRICS, CUSTOMER_NUMBER, USER_NUMBER, TICKER_ISIN, PORTFOLIO_NUMBER
 
@@ -107,6 +108,13 @@ def generate_password(length):
     return password
 
 
+def generate_hashed_password(length=None):
+    password = '123qwe'
+    if length:
+        password = generate_password(length)
+    return pbkdf2_sha256.hash(password)
+
+
 def generate_customer():
     result = "INSERT INTO public.customer (id, name, branch) VALUES \n"
     for _ in range(0, CUSTOMER_NUMBER):
@@ -123,7 +131,7 @@ def generate_user():
     roles_ids = cur.fetchall()
     for _ in range(0, USER_NUMBER):
         result += (f"('{str(uuid.uuid4())}', '{person.email(domains=['bcs.ru'])}', "
-                   f"'{person.full_name(gender=random.choice(sex))}', '{generate_password(10)}', "
+                   f"'{person.full_name(gender=random.choice(sex))}', '{generate_hashed_password()}', "
                    f"'2024-01-05', {False}, '{str(random.choice(roles_ids)[0])}'), \n")
     result = result[:len(result) - 3]
     result += " ON CONFLICT DO NOTHING;"

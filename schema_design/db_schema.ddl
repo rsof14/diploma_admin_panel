@@ -146,6 +146,19 @@ CREATE TABLE IF NOT EXISTS public."user"
     CONSTRAINT user_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS public.login_history
+(
+    id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    user_agent character(255) COLLATE pg_catalog."default" NOT NULL,
+    auth_datetime timestamp without time zone NOT NULL,
+    CONSTRAINT login_history_pkey PRIMARY KEY (id),
+    CONSTRAINT login_history_user_id_fkey FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
 ALTER TABLE IF EXISTS public.objects_permissions
     ADD CONSTRAINT objects_permissions_object_fkey FOREIGN KEY (object)
     REFERENCES public.system_objects (object_name) MATCH SIMPLE
