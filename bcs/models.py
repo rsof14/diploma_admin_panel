@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 import uuid
+from .password_generation import  form_user_password
 
 
 class Asset(models.Model):
@@ -166,7 +167,7 @@ class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     login = models.CharField(verbose_name='Логин', max_length=200, validators=[validate_login])
     name = models.CharField(verbose_name='ФИО', max_length=200)
-    password = models.CharField(verbose_name='Пароль', max_length=20)
+    password = models.TextField(verbose_name='Пароль', blank=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления в систему')
     is_superuser = models.BooleanField(verbose_name='Суперпользователь', default=False)
     role_id = models.ForeignKey('Roles', db_column='role_id', on_delete=models.DO_NOTHING, verbose_name='Роль')
@@ -178,6 +179,11 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.password == '':
+            self.password = form_user_password(str(self.login))
+        super(User, self).save(*args, **kwargs)
 
 
 class Portfolio(models.Model):
