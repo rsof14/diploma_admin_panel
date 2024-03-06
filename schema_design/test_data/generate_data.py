@@ -8,6 +8,7 @@ import string
 import uuid
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 from static_data import CITIES, CURRENCY, TICKERS, STRATEGY_NAMES, STRATEGY_TYPES, WEIGHTS, RISK_PROFILES, \
     SYSTEM_OBJECTS, PERMISSIONS, ROLES, RISK_METRICS, CUSTOMER_NUMBER, USER_NUMBER, TICKER_ISIN, PORTFOLIO_NUMBER
@@ -210,6 +211,17 @@ def generate_portfolio():
     return result
 
 
+def generate_portfolio_values():
+    result = "INSERT INTO public.portfolio_values (account, date, value) VALUES \n"
+    cur.execute("SELECT account from public.portfolio;")
+    portfolios = cur.fetchall()
+    for account in portfolios:
+        result += f"('{account[0]}', '{datetime.now().date().strftime('%Y-%m-%d')}', {random.randint(1000000, 5000000)}), \n"
+    result = result[:len(result) - 3]
+    result += " ON CONFLICT DO NOTHING;"
+    return result
+
+
 def generate_basic_objects():
     """Returning sql file with insert operation, this file must be executed before formation dependent objects"""
     result = (
@@ -226,6 +238,13 @@ def generate_dependent_objects():
     result = (f"{generate_objects_permissions()}\n{generate_user()}\n{generate_strategy()}\n"
               f"{generate_portfolio()}")
     f = open('dependent_objects.sql', 'w')
+    f.write(result)
+    f.close()
+
+
+def generate_ramaining_objects():
+    result = f"{generate_portfolio_values()}"
+    f = open('remaining_objects.sql', 'w')
     f.write(result)
     f.close()
 

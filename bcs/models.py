@@ -85,6 +85,7 @@ class Roles(models.Model):
 
 class SystemObjects(models.Model):
     object_name = models.CharField(primary_key=True, verbose_name='Наименование объекта', max_length=80)
+    ru_name = models.CharField(verbose_name='Наименование на русском', max_length=80)
 
     class Meta:
         db_table = "public\".\"system_objects"
